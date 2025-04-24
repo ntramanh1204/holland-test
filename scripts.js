@@ -61,8 +61,9 @@ function getSecondaryGroup(scores) {
   return sorted[1] ? sorted[1][0] : '';
 }
 
-// Hàm gửi dữ liệu đến Netlify Function
+// Hàm gửi dữ liệu đến Google Apps Script
 function submitToSheet(fullName, className, date, scores, answers) {
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyW4s-BOiFMd0rxvUqAk_c_1c8WWxTbrDfRhjG099ymMrUETBK8X6VKjPsCvfBQYTdzqg/exec';
   const data = {
     fullName,
     className,
@@ -73,17 +74,18 @@ function submitToSheet(fullName, className, date, scores, answers) {
     answers
   };
 
-  fetch('/.netlify/functions/submit', {
+  fetch(scriptURL, {
     method: 'POST',
+    mode: 'no-cors',
+    redirect: "follow",
     body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' }
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    }
   })
-    .then(res => res.json())
-    .then(msg => alert('Đã ghi kết quả: ' + msg.message))
-    .catch(err => alert('Lỗi: ' + err));
 }
 
-document.getElementById("hollandForm").onsubmit = function(e) {
+document.getElementById("hollandForm").onsubmit = function (e) {
   e.preventDefault();
   const form = new FormData(e.target);
   const scores = calculateScores(form);
@@ -142,7 +144,6 @@ document.getElementById("hollandForm").onsubmit = function(e) {
   document.getElementById("resultBox").style.display = "block";
   document.getElementById("resultBox").scrollIntoView({ behavior: 'smooth' });
 
-  // Gửi dữ liệu đến Netlify Function
   const fullName = form.get('name');
   const className = form.get('class');
   const date = new Date().toLocaleDateString('vi-VN');

@@ -1,8 +1,0 @@
-{
-  "name": "holland-test",
-  "version": "1.0.0",
-  "description": "Holland Test for FPT Schools",
-  "dependencies": {
-    "google-spreadsheet": "^4.1.4"
-  }
-}
