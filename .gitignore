@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.zip
+
+# Local environment files
+.env
+
+# Netlify-specific files
+.netlify/
+
+# Editor/OS-specific files
+.DS_Store
+Thumbs.db
+*.log

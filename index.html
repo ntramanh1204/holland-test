@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trắc nghiệm Holland - FPT Schools</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header>
+    <img src="fpt-trang.png" alt="FPT Logo">
+    <img src="fschool-trang.png" alt="FPT Schools Logo">
+  </header>
+  <main>
+    <h1>Trắc nghiệm Holland - Khám phá sở thích nghề nghiệp</h1>
+    <form id="hollandForm">
+      <div class="form-group">
+        <label for="name">👤 Họ và tên:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="class">🏫 Lớp:</label>
+        <input type="text" id="class" name="class" required>
+      </div>
+      <div id="questionGroups"></div>
+      <button type="submit">📨 Xem kết quả</button>
+    </form>
+    <div class="result" id="resultBox">
+      <h2>Kết quả nhóm Holland của bạn</h2>
+      <div id="resultContent"></div>
+    </div>
+  </main>
+  <script src="scripts.js"></script>
+</body>
+</html>

@@ -1,114 +1,3 @@
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trắc nghiệm Holland - FPT Schools</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fff3e0;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-    header {
-      background-color: #f57c00;
-      padding: 10px;
-      text-align: center;
-    }
-    header img {
-      height: 60px;
-      margin: 0 10px;
-    }
-    main {
-      max-width: 900px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      text-align: center;
-      color: #e65100;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .group {
-      margin-top: 30px;
-      padding: 15px;
-      border-left: 6px solid #f57c00;
-      background: #fff8f1;
-      border-radius: 8px;
-    }
-    .question {
-      margin-bottom: 10px;
-    }
-    select {
-      padding: 5px;
-      border-radius: 4px;
-      margin-top: 5px;
-    }
-    button {
-      background-color: #f57c00;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 20px;
-    }
-    .result {
-      display: none;
-      text-align: center;
-      margin-top: 30px;
-    }
-    .result h2 {
-      color: #d84315;
-    }
-  </style>
-</head>
-<body>
-<header>
-  <img src="fpt-trang.png" alt="FPT Logo">
-  <img src="fschool-trang.png" alt="FPT Schools Logo">
-</header>
-<main>
-  <h1>Trắc nghiệm Holland - Khám phá sở thích nghề nghiệp</h1>
-  <form id="hollandForm">
-    <div class="form-group">
-      <label for="name">👤 Họ và tên:</label>
-      <input type="text" id="name" required>
-    </div>
-    <div class="form-group">
-      <label for="class">🏫 Lớp:</label>
-      <input type="text" id="class" required>
-    </div>
-    <div id="questionGroups"></div>
-    <button type="submit">📨 Xem kết quả</button>
-  </form>
-  <div class="result" id="resultBox">
-    <h2>Kết quả nhóm Holland của bạn</h2>
-    <div id="resultContent"></div>
-  </div>
-</main>
-<script>
 const hollandData = {
   "R": { name: "Kỹ thuật (Realistic)", questions: ["Tự mua và lắp ráp máy vi tính theo ý mình", "Lắp ráp tủ theo hướng dẫn", "Trang điểm theo hướng dẫn", "Cắt tỉa cây cảnh", "Tháo điện thoại tìm hiểu", "Thám hiểm hang động, núi rừng", "Chăm sóc vật nuôi", "Sửa xe", "Làm đồ nội thất", "Lắp ráp máy vi tính", "Leo núi", "Đóng gói đồ đạc", "Chơi thể thao", "Đạp xe xuyên quốc gia"] },
   "I": { name: "Nghiên cứu (Investigative)", questions: ["Tham quan bảo tàng", "Tìm hiểu sự hình thành của các vì sao và vũ trụ", "Tìm hiểu về văn hóa một quốc gia", "Tìm hiểu về tâm lý con người", "Đọc sách về tương lai của loài người", "Xem tin tức khoa học", "Tìm hiểu cảm xúc con người", "Xem ca mổ tim", "Tìm hiểu nguồn gốc bệnh dịch", "Đọc báo về AI", "Tìm hiểu thế giới động vật", "Phát minh xe điện", "Thí nghiệm hóa học", "Nghiên cứu chế độ dinh dưỡng"] },
@@ -136,17 +25,69 @@ for (const [key, group] of Object.entries(hollandData)) {
   container.appendChild(groupDiv);
 }
 
-document.getElementById("hollandForm").onsubmit = function(e) {
-  e.preventDefault();
-  const form = new FormData(e.target);
-  const scores = {};
+// Hàm tính điểm số
+function calculateScores(form) {
+  const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
   for (const key in hollandData) {
-    scores[key] = 0;
     hollandData[key].questions.forEach((_, i) => {
       const val = parseInt(form.get(`${key}_${i}`));
       if (val === 2) scores[key] += 1;
     });
   }
+  return scores;
+}
+
+// Hàm thu thập câu trả lời
+function collectAnswers(form) {
+  const answers = { R: [], I: [], A: [], S: [], E: [], C: [] };
+  for (const key in hollandData) {
+    hollandData[key].questions.forEach((_, i) => {
+      const val = form.get(`${key}_${i}`);
+      answers[key].push(val);
+    });
+  }
+  return answers;
+}
+
+// Hàm lấy nhóm mạnh nhất
+function getMainGroup(scores) {
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  return sorted[0] ? sorted[0][0] : '';
+}
+
+// Hàm lấy nhóm phụ
+function getSecondaryGroup(scores) {
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  return sorted[1] ? sorted[1][0] : '';
+}
+
+// Hàm gửi dữ liệu đến Netlify Function
+function submitToSheet(fullName, className, date, scores, answers) {
+  const data = {
+    fullName,
+    className,
+    date,
+    mainGroup: getMainGroup(scores),
+    secondaryGroup: getSecondaryGroup(scores),
+    scores,
+    answers
+  };
+
+  fetch('/.netlify/functions/submit', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' }
+  })
+    .then(res => res.json())
+    .then(msg => alert('Đã ghi kết quả: ' + msg.message))
+    .catch(err => alert('Lỗi: ' + err));
+}
+
+document.getElementById("hollandForm").onsubmit = function(e) {
+  e.preventDefault();
+  const form = new FormData(e.target);
+  const scores = calculateScores(form);
+  const answers = collectAnswers(form);
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
   const top2 = sorted.slice(0, 2);
   const comboKey = `${top2[0][0]}+${top2[1][0]}`;
@@ -200,9 +141,10 @@ document.getElementById("hollandForm").onsubmit = function(e) {
   document.getElementById("resultContent").innerHTML = html;
   document.getElementById("resultBox").style.display = "block";
   document.getElementById("resultBox").scrollIntoView({ behavior: 'smooth' });
-};
-</script>
-</body>
-</html>
 
-</html>
+  // Gửi dữ liệu đến Netlify Function
+  const fullName = form.get('name');
+  const className = form.get('class');
+  const date = new Date().toLocaleDateString('vi-VN');
+  submitToSheet(fullName, className, date, scores, answers);
+};
