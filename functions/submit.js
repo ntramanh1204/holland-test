@@ -9,10 +9,22 @@ exports.handler = async (event) => {
       };
     }
 
-    const { fullName, className, date, mainGroup, secondaryGroup, scores, answers } = JSON.parse(event.body);
+    let data;
+    try {
+      data = JSON.parse(event.body);
+    } catch (parseError) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Invalid JSON payload' }),
+      };
+    }
+    const { fullName, className, date, mainGroup, secondaryGroup, scores, answers } = data;
 
-    const doc = new GoogleSpreadsheet('1_JNzhtBOgOrtUDLMjKKQXr0XWJgV0FOZZcgZsm4e4ac');
-    await doc.useServiceAccountAuth(JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT));
+    // Khởi tạo GoogleSpreadsheet với thông tin xác thực
+    const doc = new GoogleSpreadsheet('1_JNzhtBOgOrtUDLMjKKQXr0XWJgV0FOZZcgZsm4e4ac', {
+      auth: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT)
+    });
+
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
 
